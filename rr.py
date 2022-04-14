@@ -3,15 +3,26 @@ import sys
 import numpy as np
 import random
 import time
-# ./rr inputfile
+import json
+
+
+#TODOS = FILL DATA, TRACK ADDITIONAL TWO STATISTICS
+
+# ./rr inputfile debug alg_type inputfile
 
 #inputfile = 100 (unsorted) integers, one per line
 #output = residue returned by Repeated-Random
-
 #rep1 =  +1, -1
 #rep2 = pre-partition (determinative residue assuming +kk)
 
-max_iter = 2500
+max_iter = 25000
+#7 secs for code 1, 35 secs for code 11
+
+"""
+DEBUG = print | mult trials
+print = 1
+mult trials = 1 --> + 2
+"""
 
 def load_int_array(inputfile):
     with open(inputfile) as f:
@@ -20,11 +31,11 @@ def load_int_array(inputfile):
 
 def repeated_random(arr, f=0):
     if f == 1:
-        if DEBUG:
+        if DEBUG & 1 == 1:
             print('standard representation \narray: ', arr)
         return repeated_random_std(arr)
     if f == 11:
-        if DEBUG:
+        if DEBUG & 1 == 1:
             print('prepart representation \narray: ', arr)
         return repeated_random_prepart(arr)
 
@@ -33,7 +44,7 @@ def repeated_random_std(arr):
     for x in range(1, max_iter):
         S_prime = [np.random.randint(2)*2-1 for _ in range(len(arr))]
         if (residue_std(arr, S_prime) < residue_std(arr, S)):
-            if DEBUG:
+            if DEBUG & 1 == 1:
                 print("updated S: ", S_prime)
                 print("residue: ", residue_std(arr, S_prime))
             S = S_prime
@@ -51,7 +62,7 @@ def repeated_random_prepart(arr):
         S_prime = [random.randint(1, len(arr)) for _ in range(len(arr))]
         p2 = prepart_to_arr(arr, S_prime)
         if (karmarkar_karp(p2) < karmarkar_karp(p)):
-            if DEBUG:
+            if DEBUG & 1 == 1:
                 print("updated S: ", S_prime)
                 print("updated array: ", p2)
                 print("residue: ", karmarkar_karp(p2))
@@ -74,21 +85,28 @@ def karmarkar_karp(arr):
     #print("karmarker output:",np.sum(arr))
     return np.sum(arr)
 
-def get_inputfile_from_command_line():
-    parser = argparse.ArgumentParser(description='')
-    parser.add_argument('text', action='store', type=str, help='The text to parse.')
-    args = parser.parse_args()
-    inputfile = args.text
-    print(inputfile)
-
 if __name__ == '__main__':
     global DEBUG
     args = sys.argv
     DEBUG, c, inputfile = int(args[1]), int(args[2]), args[3]
-    arr = load_int_array(inputfile)
+    
+    if (DEBUG & 1<<1) == 2:
+        data = {"residues": {"Rep Rand" : [], "Prepart Rep Rand" : []}, "updates": {"Rep Rand" : [], "Prepart Rep Rand" : []}, "indices" : {"Rep Rand" : [], "Prepart Rep Rand" : []}} 
+        #FILL DATA
+        with open('test2.json', 'w') as f:
+            json.dump(data, f)
+    
+    else:
+        arr = load_int_array(inputfile)
+        t1 = time.time()
+        repeated_random(arr, c)
+        print('iterations, time: ', max_iter, time.time()-t1)
 
-    #arr = [np.random.randint(10) for _ in range(5)]
-
-    t1 = time.time()
-    repeated_random(arr, c) #UPDATE c
-    print('iterations, time: ', max_iter, time.time()-t1)
+"""
+output format:
+{
+'residue' : {alg : alg_residues = []}
+'updates' : {alg : alg_updates = []}
+'indices' : {alg : alg_indices = []}
+}
+"""
