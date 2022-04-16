@@ -225,8 +225,9 @@ def main():
     DEBUG, c, inputfile = int(args[1]), int(args[2]), args[3]
 
     #get_tests_data()
-    alg_functions=[karmarkar_karp,repeated_random_std,hill_climbing_standard,simulated_annealing_standard,repeated_random_prepart,hill_climbing_prepart,simulated_annealing_prepart]
-    partition_function = alg_functions[c]
+    partition_functions = {0:karmarkar_karp,1:repeated_random_std,2:hill_climbing_standard,3:simulated_annealing_standard,11:repeated_random_prepart,12:hill_climbing_prepart,13:simulated_annealing_prepart}
+    #alg_functions=[karmarkar_karp,repeated_random_std,hill_climbing_standard,simulated_annealing_standard,repeated_random_prepart,hill_climbing_prepart,simulated_annealing_prepart]
+    partition_function = partition_functions[c]
 
     arr = load_int_array(inputfile)
     if c==0:
