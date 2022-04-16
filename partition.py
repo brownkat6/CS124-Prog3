@@ -33,7 +33,7 @@ def karmarkar_karp(arr):
     return residue
 
 def get_residue(arr,signs):
-    return np.sum(np.dot(arr,signs))
+    return np.abs(np.sum(np.dot(arr,signs)))
 
 def get_random_signs():
     return [np.random.randint(2)*2-1 for _ in range(N)]
