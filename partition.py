@@ -15,7 +15,7 @@ import os
 #signs=[1,1,1,1]
 #N=len(arr)
 N=100
-max_iter=25000
+max_iter=2500
 DEBUG=False
 
 def load_int_array(inputfile):
