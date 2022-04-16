@@ -225,9 +225,15 @@ def main():
     DEBUG, c, inputfile = int(args[1]), int(args[2]), args[3]
 
     #get_tests_data()
+    alg_functions=[karmarkar_karp,repeated_random_std,hill_climbing_standard,simulated_annealing_standard,repeated_random_prepart,hill_climbing_prepart,simulated_annealing_prepart]
+    partition_function = alg_functions[c]
 
     arr = load_int_array(inputfile)
-    print(karmarkar_karp(arr))
+    if c==0:
+        print(karmarkar_karp(arr))
+    else:
+        #print(partition_function)
+        print(partition_function(arr)[0])
 
 # TODO: what is the second input argument c?
 if __name__ == '__main__':
