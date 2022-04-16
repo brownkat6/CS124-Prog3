@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 import json
 
 #Data (thanks https://www.geeksforgeeks.org/read-json-file-using-python/)
-f = open('test.json')
+f = open('tests_data.json')
 data = json.load(f)
 residues = data["residues"]
 updates = data["updates"]
@@ -36,6 +36,9 @@ f.close()
 # Calculate the average
 means = {}
 for k in residues:
+    # NOTE: since some values are negative and the averages can cancel out, we might want to switch to measuring mean absolute value of residue
+    # NOTE: since some methods produce much larger values than others (e.g. repeated rand prepart has much larger residue values), we might want to switch to log-scaling the mean residue or something and plotting that. Otherwise we can't see the differences as well
+    #means[k] = np.log(np.abs(np.mean(residues[k])))
     means[k] = np.mean(residues[k])
 
 # Calculate the standard deviation

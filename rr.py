@@ -74,7 +74,7 @@ def prepart_to_arr(arr, S):
     p = [0 for _ in range(len(arr))]
     for i in range(len(arr)):
         p[S[i]-1] += arr[i]
-    return p 
+    return p
 
 def karmarkar_karp(arr):
     k=2
@@ -89,13 +89,13 @@ if __name__ == '__main__':
     global DEBUG
     args = sys.argv
     DEBUG, c, inputfile = int(args[1]), int(args[2]), args[3]
-    
+
     if (DEBUG & 1<<1) == 2:
-        data = {"residues": {"Rep Rand" : [], "Prepart Rep Rand" : []}, "updates": {"Rep Rand" : [], "Prepart Rep Rand" : []}, "indices" : {"Rep Rand" : [], "Prepart Rep Rand" : []}} 
+        data = {"residues": {"Rep Rand" : [], "Prepart Rep Rand" : []}, "updates": {"Rep Rand" : [], "Prepart Rep Rand" : []}, "indices" : {"Rep Rand" : [], "Prepart Rep Rand" : []}}
         #FILL DATA
         with open('test2.json', 'w') as f:
             json.dump(data, f)
-    
+
     else:
         arr = load_int_array(inputfile)
         t1 = time.time()

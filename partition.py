@@ -11,11 +11,11 @@ import os
 # where you may assume inputfile is a list of 100 (unsorted) integers, one per line, and the
 # desired output is the residue obtained by running Karmarkar-Karp with these 100 numbers
 # as input
-arr=[1,3,7,9]
-signs=[1,1,1,1]
+#arr=[1,3,7,9]
+#signs=[1,1,1,1]
 #N=len(arr)
 N=100
-max_iter=250
+max_iter=25000
 DEBUG=False
 
 def load_int_array(inputfile):
@@ -39,6 +39,7 @@ def get_random_signs():
     return [np.random.randint(2)*2-1 for _ in range(N)]
 
 def get_neighbor(arr):
+    arr = [n for n in arr] # Copy array in place
     idx = np.random.randint(N)
     arr[idx]*=-1
     return arr
@@ -46,12 +47,12 @@ def get_neighbor(arr):
 def hill_climbing_standard(arr):
     num_updates,index_of_last_update=0,-1
     signs = get_random_signs()
-    for _ in range(max_iter):
+    for i in range(max_iter):
         signs_prime = get_neighbor(signs)
         if get_residue(arr,signs_prime)<get_residue(arr,signs):
             signs=signs_prime
             num_updates+=1
-            index_of_last_update=_
+            index_of_last_update=i
     #print(f"Residue of final arr: {get_residue(arr,signs)}")
     residue=get_residue(arr,signs)
     return residue,num_updates,index_of_last_update
@@ -181,10 +182,11 @@ def get_inputfile_from_command_line():
 
 # @param partition_function - returns residue,num_updates,index_of_last_update given integer array
 def run_alg_50_times(partition_function):
-    print(partition_function)
+    #print(partition_function)
     residues,updates,indices=[],[],[]
-    for filename in [f"test{i}.txt" for i in range(1,51)]:
-        #print(filename)
+    for i,filename in enumerate([f"test{i}.txt" for i in range(1,51)]):
+        if i%10==0 or i==1 or i==2:
+            print(partition_function,i)
         arr = load_int_array(filename)
         if partition_function==karmarkar_karp:
             residue,num_updates,index_of_last_update=partition_function(arr),-1,-1
@@ -197,6 +199,9 @@ def run_alg_50_times(partition_function):
     # Return residues,updates,indices arrays of 50 values
     return residues,updates,indices
 
+
+# TODO: debug data being dumped in tests_data.json
+# Specifically, why are all the values 0 in data['updates'][k] for k in ['Hill Climb', 'Sim Anneal']
 
 def get_tests_data():
     alg_names=["K-Karp","Rep Rand","Hill Climb","Sim Anneal", "Prepart Rep Rand","Prepart Hill Climb","Prepart Sim Anneal"]
@@ -212,22 +217,22 @@ def get_tests_data():
         d['residues'][alg_names[i]]=residues
         d['updates'][alg_names[i]]=updates
         d['indices'][alg_names[i]]=indices
-    print(d)
     with open('tests_data.json', 'w') as fp:
         json.dump(d, fp)
-    #json.dumps(d,"tests_data.json")
 
-
-if __name__ == '__main__':
+def main():
     args = sys.argv
     DEBUG, c, inputfile = int(args[1]), int(args[2]), args[3]
 
     #get_tests_data()
 
-    #inputfile = "test2.txt"
     arr = load_int_array(inputfile)
-    #arr = [np.random.randint(N) for _ in range(100)]
     print(karmarkar_karp(arr))
+
+# TODO: what is the second input argument c?
+if __name__ == '__main__':
+    main()
+    pass
 
 # Track num total updates, index of last update
 #
