@@ -45,8 +45,8 @@ def karmarkar_karp(arr):
     heapq.heappush(arr, 0)
     elem1 = heapq.heappop(arr)
     elem2 = heapq.heappop(arr)
-  assert(elem2 == 0)
-  assert(elem1 != 0)
+  #assert(elem2 == 0)
+  #assert(elem1 != 0)
   return -elem1
 
 def get_residue(arr,signs):
@@ -94,7 +94,8 @@ def hill_climbing_prepart(arr):
             num_updates+=1
             index_of_last_update=_
     #print(f"Residue of Hill Climbing Prepart: {get_residue(arr,signs)}")
-    residue=get_residue(arr,signs)
+    #residue=get_residue(arr,signs)
+    residue=karmarkar_karp(p)
     return residue,num_updates,index_of_last_update
     #return signs
 
@@ -116,7 +117,7 @@ def simulated_annealing_standard(arr):
             num_updates+=1
             index_of_last_update=iter
     #print(f"Residue of final arr: {get_residue(arr,signs_pp)}")
-    residue=get_residue(arr,signs)
+    residue=get_residue(arr,signs_pp)
     return residue,num_updates,index_of_last_update
     #return signs_pp
 
@@ -140,7 +141,8 @@ def simulated_annealing_prepart(arr):
                 num_updates+=1
                 index_of_last_update=iter
     #print(f"Residue of final arr: {get_residue(arr,signs_pp)}")
-    residue=get_residue(arr,signs)
+    residue=karmarkar_karp(p3)
+    #residue=get_residue(arr,signs)
     return residue,num_updates,index_of_last_update
     #return signs_pp
 
@@ -187,7 +189,7 @@ def repeated_random_prepart(arr):
             p = p2
             num_updates+=1
             index_of_last_update=i
-    residue=get_residue(arr,S)
+    residue=karmarkar_karp(p)#get_residue(arr,S)
     return residue,num_updates,index_of_last_update
     #return S
 
