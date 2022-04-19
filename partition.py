@@ -4,6 +4,7 @@ import json
 import sys
 import random
 import os
+import heapq
 #test_data=json.loads("test.json")
 #json.dumps(mydictionary)
 # ./kk inputfile
@@ -17,7 +18,7 @@ import os
 N=100
 # TODO: make program faster. Without this, we can't run all 25000 iterations and so our numbers are wrong.
 # NOTE: our program times out on gradescope if we run it for 25000 iterations. This is a problem lol.
-max_iter=2500
+max_iter=25000
 DEBUG=False
 
 def load_int_array(inputfile):
@@ -25,7 +26,7 @@ def load_int_array(inputfile):
         lst = [int(x) for x in f.read().split()]
         return lst
 
-def karmarkar_karp(arr):
+def karmarkar_karp2(arr):
     k=2
     while np.count_nonzero(arr)>1:
         indices = np.argpartition(arr, len(arr) - k)[-k:]
@@ -33,6 +34,20 @@ def karmarkar_karp(arr):
         arr[indices[0]]=0
     residue=np.sum(arr)
     return residue
+
+def karmarkar_karp(arr):
+  arr = [-n for n in arr]
+  heapq.heapify(arr)
+  elem1 = heapq.heappop(arr)
+  elem2 = heapq.heappop(arr)
+  while (elem2 != 0):
+    heapq.heappush(arr, -abs(elem1 - elem2))
+    heapq.heappush(arr, 0)
+    elem1 = heapq.heappop(arr)
+    elem2 = heapq.heappop(arr)
+  assert(elem2 == 0)
+  assert(elem1 != 0)
+  return -elem1
 
 def get_residue(arr,signs):
     return np.abs(np.sum(np.dot(arr,signs)))
