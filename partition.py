@@ -21,6 +21,8 @@ N=100
 max_iter=25000
 DEBUG=False
 
+#prepart hill climbing, and simulated annealing algorithm <- look into
+
 def load_int_array(inputfile):
     with open(inputfile) as f:
         lst = [int(x) for x in f.read().split()]
@@ -83,7 +85,7 @@ def prepart_to_arr(arr, S):
 
 def hill_climbing_prepart(arr):
     num_updates,index_of_last_update=0,-1
-    signs = get_random_signs()
+    signs = [random.randint(1, len(arr)) for _ in range(len(arr))]
     p = prepart_to_arr(arr, signs)
     for i in range(max_iter):
         signs_prime = get_neighbor(signs)
