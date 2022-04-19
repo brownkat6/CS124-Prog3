@@ -15,6 +15,8 @@ import os
 #signs=[1,1,1,1]
 #N=len(arr)
 N=100
+# TODO: make program faster. Without this, we can't run all 25000 iterations and so our numbers are wrong.
+# NOTE: our program times out on gradescope if we run it for 25000 iterations. This is a problem lol.
 max_iter=2500
 DEBUG=False
 
@@ -139,7 +141,7 @@ def repeated_random(arr, f=0):
 
 def repeated_random_std(arr):
     num_updates,index_of_last_update=0,-1
-    S = [np.random.randint(2)*2-1 for _ in range(len(arr))]
+    S = get_random_signs()
     for i in range(1, max_iter):
         S_prime = [np.random.randint(2)*2-1 for _ in range(len(arr))]
         if (get_residue(arr, S_prime) < get_residue(arr, S)):
@@ -155,6 +157,7 @@ def repeated_random_std(arr):
 
 def repeated_random_prepart(arr):
     num_updates,index_of_last_update=0,-1
+    # TODO: why is the S (signs) variable being generated in range 1-N? That will mess with the results of get_residue(arr,S)? What am I misunderstanding here?
     S = [random.randint(1, len(arr)) for _ in range(len(arr))]
     p = prepart_to_arr(arr, S)
     for i in range(1, max_iter):
