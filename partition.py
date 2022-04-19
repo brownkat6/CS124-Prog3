@@ -85,19 +85,16 @@ def hill_climbing_prepart(arr):
     num_updates,index_of_last_update=0,-1
     signs = get_random_signs()
     p = prepart_to_arr(arr, signs)
-    for _ in range(max_iter):
+    for i in range(max_iter):
         signs_prime = get_neighbor(signs)
         p2 = prepart_to_arr(arr, signs_prime)
         if (karmarkar_karp(p2) < karmarkar_karp(p)):
             signs = signs_prime
             p = p2
             num_updates+=1
-            index_of_last_update=_
-    #print(f"Residue of Hill Climbing Prepart: {get_residue(arr,signs)}")
-    #residue=get_residue(arr,signs)
+            index_of_last_update=i
     residue=karmarkar_karp(p)
     return residue,num_updates,index_of_last_update
-    #return signs
 
 def T(iter):
     return 10**10 * 0.8**(int(iter/300))
@@ -116,10 +113,8 @@ def simulated_annealing_standard(arr):
             signs_pp=signs
             num_updates+=1
             index_of_last_update=iter
-    #print(f"Residue of final arr: {get_residue(arr,signs_pp)}")
     residue=get_residue(arr,signs_pp)
     return residue,num_updates,index_of_last_update
-    #return signs_pp
 
 def simulated_annealing_prepart(arr):
     num_updates,index_of_last_update=0,-1
@@ -135,16 +130,13 @@ def simulated_annealing_prepart(arr):
         if residue_prime<residue or np.random.rand() < exp_prob:
             signs=signs_prime
             p=p2
-            if residue_prime<karmarkar_karp(p3):
-                signs_pp=signs
-                p3=p
-                num_updates+=1
-                index_of_last_update=iter
-    #print(f"Residue of final arr: {get_residue(arr,signs_pp)}")
+        if residue<karmarkar_karp(p3):
+            signs_pp=signs
+            p3=p
+            num_updates+=1
+            index_of_last_update=iter
     residue=karmarkar_karp(p3)
-    #residue=get_residue(arr,signs)
     return residue,num_updates,index_of_last_update
-    #return signs_pp
 
 def repeated_random(arr, f=0):
     if f == 1:
