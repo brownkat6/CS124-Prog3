@@ -57,17 +57,35 @@ def get_residue(arr,signs):
 def get_random_signs():
     return [np.random.randint(2)*2-1 for _ in range(N)]
 
-def get_neighbor(arr):
+def get_neighbor_std(arr):
     arr = [n for n in arr] # Copy array in place
     idx = np.random.randint(N)
+    idx2 = np.random.randint(N)
+    while (idx2 == idx):
+        idx2 = np.random.randint(N)
     arr[idx]*=-1
+    if random.randint(0, 1) == 1:
+        arr[idx2]*=-1
     return arr
+
+#A random move on this state space can be defined as follows. Choose two random indices i and j from [1, n] with i ̸= j. Set si to −si and with probability 1/2, set sj to −sj .
+
+def get_neighbor_prepart(arr):
+    arr = [n for n in arr] # Copy array in place
+    idx = np.random.randint(N)
+    arr[idx] = random.randint(1, N)
+    return arr
+"""A random solution can be obtained by generating a sequence of n values in the range [1, n] and using
+this for P . Thinking of all possible solutions as a state space, a natural way to define neighbors of a
+solution P is as the set of all solutions that differ from P in just one place. The interpretation is that we
+change the prepartitioning by changing the partition of one element. A random move on this state space
+can be defined as follows. Choose two random indices i and j from [1, n] with pi ̸= j and set pi to j."""
 
 def hill_climbing_standard(arr):
     num_updates,index_of_last_update=0,-1
     signs = get_random_signs()
     for i in range(max_iter):
-        signs_prime = get_neighbor(signs)
+        signs_prime = get_neighbor_std(signs)
         if get_residue(arr,signs_prime)<get_residue(arr,signs):
             signs=signs_prime
             num_updates+=1
@@ -88,7 +106,7 @@ def hill_climbing_prepart(arr):
     signs = [random.randint(1, len(arr)) for _ in range(len(arr))]
     p = prepart_to_arr(arr, signs)
     for i in range(max_iter):
-        signs_prime = get_neighbor(signs)
+        signs_prime =   (signs)
         p2 = prepart_to_arr(arr, signs_prime)
         if (karmarkar_karp(p2) < karmarkar_karp(p)):
             signs = signs_prime
@@ -106,7 +124,7 @@ def simulated_annealing_standard(arr):
     signs = get_random_signs()
     signs_pp=signs
     for iter in range(max_iter):
-        signs_prime = get_neighbor(signs)
+        signs_prime = get_neighbor_std(signs)
         residue,residue_prime=get_residue(arr,signs),get_residue(arr,signs_prime)
         exp_prob = np.exp(-(residue_prime-residue)/T(iter))
         if residue_prime<residue or np.random.rand() < exp_prob:
@@ -125,7 +143,7 @@ def simulated_annealing_prepart(arr):
     p = prepart_to_arr(arr, signs)
     p3 = prepart_to_arr(arr, signs_pp)
     for iter in range(max_iter):
-        signs_prime = get_neighbor(signs)
+        signs_prime = get_neighbor_prepart(signs)
         p2 = prepart_to_arr(arr, signs_prime)
         residue,residue_prime=karmarkar_karp(p),karmarkar_karp(p2)
         exp_prob = np.exp(-(residue_prime-residue)/T(iter))
