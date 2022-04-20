@@ -106,7 +106,7 @@ def hill_climbing_prepart(arr):
     signs = [random.randint(1, len(arr)) for _ in range(len(arr))]
     p = prepart_to_arr(arr, signs)
     for i in range(max_iter):
-        signs_prime =   (signs)
+        signs_prime = get_neighbor_prepart(signs)
         p2 = prepart_to_arr(arr, signs_prime)
         if (karmarkar_karp(p2) < karmarkar_karp(p)):
             signs = signs_prime
