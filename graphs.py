@@ -36,9 +36,6 @@ f.close()
 # Calculate the average
 means = {}
 for k in residues:
-    # NOTE: since some values are negative and the averages can cancel out, we might want to switch to measuring mean absolute value of residue
-    # NOTE: since some methods produce much larger values than others (e.g. repeated rand prepart has much larger residue values), we might want to switch to log-scaling the mean residue or something and plotting that. Otherwise we can't see the differences as well
-    #means[k] = np.log(np.abs(np.mean(residues[k])))
     means[k] = np.mean(residues[k])
 
 # Calculate the standard deviation
@@ -71,11 +68,11 @@ ax.yaxis.grid(True)
 
 # Save the figure and show
 plt.tight_layout()
-#plt.savefig('bar_plot_with_error_bars.png')
+plt.savefig('number_partition_heuristics_residue.png')
 plt.show()
 
-plt.pause(0.01)
-wait = input("Enter to continue...")
+#plt.pause(0.01)
+#wait = input("Enter to continue...")
 
 #thank you https://matplotlib.org/3.5.0/gallery/lines_bars_and_markers/categorical_variables.html
 
@@ -89,14 +86,15 @@ names = list(data.keys())
 values1 = list(data.values())
 values2 = list(data2.values())
 
-fig, axs = plt.subplots(1, 2, figsize=(9, 4), sharey=True)
-axs[0].scatter(names, values1)
-axs[1].scatter(names, values2)
-axs[0].tick_params(labelrotation=45)
-axs[1].tick_params(labelrotation=45)
-axs[0].title.set_text('Number Updates')
-axs[1].title.set_text('Final Update Index')
-fig.suptitle('Number Partition Heuristics')
-plt.tight_layout()
+plt.scatter(names, values1)
+plt.tick_params(labelrotation=45)
+plt.title('Number Updates')
+plt.savefig('number_partition_num_updates.png')
+plt.show()
 
+plt.tick_params(labelrotation=45)
+plt.title('Final Update Index')
+plt.scatter(names, values2)
+#fig.suptitle('Number Partition Heuristics')
+plt.savefig('number_partition_last_index_update.png')
 plt.show()

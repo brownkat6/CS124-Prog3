@@ -7,15 +7,11 @@ import os
 import heapq
 import math
 
-# where you may assume inputfile is a list of 100 (unsorted) integers, one per line, and the
-# desired output is the residue obtained by running Karmarkar-Karp with these 100 numbers
-# as input
 N=100
 max_iter=10000
 DEBUG=False
 
-#prepart hill climbing, and simulated annealing algorithm <- look into
-
+# Referenced CLRS textbook for pseudocode on implementing a max heap
 def max_heapify(A,i):
     l,r = 2*i,2*i+1 # Left(i), Right(i)
     if l < len(A) and A[l]>A[i]:
@@ -65,29 +61,6 @@ def karmarkar_karp(arr):
         v1,v2=heap_extract_max(arr),heap_extract_max(arr)
     return v1
 
-'''
-def karmarkar_karp2(arr):
-    k=2
-    while np.count_nonzero(arr)>1:
-        indices = np.argpartition(arr, len(arr) - k)[-k:]
-        arr[indices[1]]-=arr[indices[0]]
-        arr[indices[0]]=0
-    residue=np.sum(arr)
-    return residue
-
-def karmarkar_karp3(arr):
-  arr = [-n for n in arr]
-  heapq.heapify(arr)
-  elem1 = heapq.heappop(arr)
-  elem2 = heapq.heappop(arr)
-  while (elem2 != 0):
-    heapq.heappush(arr, -abs(elem1 - elem2))
-    heapq.heappush(arr, 0)
-    elem1 = heapq.heappop(arr)
-    elem2 = heapq.heappop(arr)
-  return -elem1
-  '''
-
 def get_residue(arr,signs):
     return np.abs(np.sum(np.dot(arr,signs)))
 
@@ -129,7 +102,6 @@ def hill_climbing_standard(arr):
             index_of_last_update=i
     residue=get_residue(arr,signs)
     return residue,num_updates,index_of_last_update
-    #return signs
 
 def prepart_to_arr(arr, S):
     p = [0 for _ in range(len(arr))]
@@ -218,7 +190,6 @@ def repeated_random_std(arr):
             index_of_last_update=i
     residue=get_residue(arr,S)
     return residue,num_updates,index_of_last_update
-    #return S
 
 def repeated_random_prepart(arr):
     num_updates,index_of_last_update=0,-1
@@ -266,10 +237,6 @@ def run_alg_50_times(partition_function):
     # Return residues,updates,indices arrays of 50 values
     return residues,updates,indices
 
-
-# TODO: debug data being dumped in tests_data.json
-# Specifically, why are all the values 0 in data['updates'][k] for k in ['Hill Climb', 'Sim Anneal']
-
 def get_tests_data():
     alg_names=["K-Karp","Rep Rand","Hill Climb","Sim Anneal", "Prepart Rep Rand","Prepart Hill Climb","Prepart Sim Anneal"]
     alg_functions=[karmarkar_karp,repeated_random_std,hill_climbing_standard,simulated_annealing_standard,repeated_random_prepart,hill_climbing_prepart,simulated_annealing_prepart]
@@ -291,22 +258,14 @@ def main():
     args = sys.argv
     DEBUG, c, inputfile = int(args[1]), int(args[2]), args[3]
 
-    #get_tests_data()
     partition_functions = {0:karmarkar_karp,1:repeated_random_std,2:hill_climbing_standard,3:simulated_annealing_standard,11:repeated_random_prepart,12:hill_climbing_prepart,13:simulated_annealing_prepart}
-    #alg_functions=[karmarkar_karp,repeated_random_std,hill_climbing_standard,simulated_annealing_standard,repeated_random_prepart,hill_climbing_prepart,simulated_annealing_prepart]
     partition_function = partition_functions[c]
 
     arr = load_int_array(inputfile)
     if c==0:
         print(karmarkar_karp(arr))
     else:
-        #print(partition_function)
         print(partition_function(arr)[0])
 
-# TODO: what is the second input argument c?
 if __name__ == '__main__':
     main()
-    pass
-
-# Track num total updates, index of last update
-#
