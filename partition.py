@@ -11,7 +11,7 @@ import math
 # desired output is the residue obtained by running Karmarkar-Karp with these 100 numbers
 # as input
 N=100
-max_iter=25000
+max_iter=10000
 DEBUG=False
 
 #prepart hill climbing, and simulated annealing algorithm <- look into
