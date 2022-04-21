@@ -5,29 +5,67 @@ import sys
 import random
 import os
 import heapq
-#test_data=json.loads("test.json")
-#json.dumps(mydictionary)
-# ./kk inputfile
+import math
 
 # where you may assume inputfile is a list of 100 (unsorted) integers, one per line, and the
 # desired output is the residue obtained by running Karmarkar-Karp with these 100 numbers
 # as input
-#arr=[1,3,7,9]
-#signs=[1,1,1,1]
-#N=len(arr)
 N=100
-# TODO: make program faster. Without this, we can't run all 25000 iterations and so our numbers are wrong.
-# NOTE: our program times out on gradescope if we run it for 25000 iterations. This is a problem lol.
 max_iter=25000
 DEBUG=False
 
 #prepart hill climbing, and simulated annealing algorithm <- look into
+
+def max_heapify(A,i):
+    l,r = 2*i,2*i+1 # Left(i), Right(i)
+    if l < len(A) and A[l]>A[i]:
+        largest=l
+    else:
+        largest=i
+    if r < len(A) and A[r]>A[largest]:
+        largest=r
+    if largest != i:
+        A[i],A[largest]=A[largest],A[i]
+        max_heapify(A,largest)
+def build_max_heap(A):
+    for i in range(len(A)//2,-1,-1):
+        max_heapify(A,i)
+def heap_extract_max(A):
+    if len(A)<1:
+        print("Error: couldn't extract max because list has no elements'")
+        return -1
+    maxv = A[0]
+    A[0] = A[-1]
+    A.pop()
+    max_heapify(A,0)
+    return maxv
+def heap_increase_key(A,i,key):
+    if key<A[i]:
+        print("Error: new key is smaller than current key")
+    A[i]=key
+    while i>0 and A[i//2]<A[i]:
+        A[i],A[i//2]=A[i//2],A[i]
+        i=i//2
+def max_heap_insert(A,key):
+    A.append(-math.inf)
+    heap_increase_key(A,len(A)-1,key)
 
 def load_int_array(inputfile):
     with open(inputfile) as f:
         lst = [int(x) for x in f.read().split()]
         return lst
 
+def karmarkar_karp(arr):
+    arr = [n for n in arr]
+    build_max_heap(arr)
+    v1,v2=heap_extract_max(arr),heap_extract_max(arr)
+    while v2 != 0:
+        max_heap_insert(arr,abs(v1-v2))
+        max_heap_insert(arr,0)
+        v1,v2=heap_extract_max(arr),heap_extract_max(arr)
+    return v1
+
+'''
 def karmarkar_karp2(arr):
     k=2
     while np.count_nonzero(arr)>1:
@@ -37,7 +75,7 @@ def karmarkar_karp2(arr):
     residue=np.sum(arr)
     return residue
 
-def karmarkar_karp(arr):
+def karmarkar_karp3(arr):
   arr = [-n for n in arr]
   heapq.heapify(arr)
   elem1 = heapq.heappop(arr)
@@ -47,9 +85,8 @@ def karmarkar_karp(arr):
     heapq.heappush(arr, 0)
     elem1 = heapq.heappop(arr)
     elem2 = heapq.heappop(arr)
-  #assert(elem2 == 0)
-  #assert(elem1 != 0)
   return -elem1
+  '''
 
 def get_residue(arr,signs):
     return np.abs(np.sum(np.dot(arr,signs)))
@@ -90,7 +127,6 @@ def hill_climbing_standard(arr):
             signs=signs_prime
             num_updates+=1
             index_of_last_update=i
-    #print(f"Residue of final arr: {get_residue(arr,signs)}")
     residue=get_residue(arr,signs)
     return residue,num_updates,index_of_last_update
     #return signs
@@ -186,7 +222,6 @@ def repeated_random_std(arr):
 
 def repeated_random_prepart(arr):
     num_updates,index_of_last_update=0,-1
-    # TODO: why is the S (signs) variable being generated in range 1-N? That will mess with the results of get_residue(arr,S)? What am I misunderstanding here?
     S = [random.randint(1, len(arr)) for _ in range(len(arr))]
     p = prepart_to_arr(arr, S)
     for i in range(1, max_iter):
